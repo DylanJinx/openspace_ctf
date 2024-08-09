@@ -38,4 +38,5 @@ Paid: 0.000238606904286492 ETH (272244 gas * 0.876445043 gwei)
 存储的是`VaultLogic address`。
 
 ## 注意
-在`Attacker`合约中的`attack()`函数，转入到`vault`合约中的钱不能大于`vault`合约拥有的钱，否则会因为这行代码报错`(bool result, ) = msg.sender.call{value: deposites[msg.sender]}("");`。原因是因为会vault合约第二次转钱时，它剩余的钱小于`deposites[msg.sender]`，那么最后`vault`合约就还有剩余。
+在`Attacker`合约中的`attack()`函数，转入到`vault`合约中的钱不能大于`vault`合约拥有的钱（如果想要全部取干净，那么需要deposites[msg.sender]是`address(vault).balance`的因子），否则会因为这行代码报错`(bool result, ) = msg.sender.call{value: deposites[msg.sender]}("");`。
+如果不这样，第二次转钱时，`address(vault).balance`小于`deposites[msg.sender]`，`call`失败，`vault`合约就还有剩余。
